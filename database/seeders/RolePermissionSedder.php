@@ -28,34 +28,51 @@ class RolePermissionSedder extends Seeder
                 'permissions' => [
                     'dashboard.view',
                     'dashboard.edit'
-
                 ]
-                ],
+            ],
+            [
+                'group_name' => 'blog',
+                'permissions' => [
+                    // blog Permission
+                    'blog.create',
+                    'blog.view',
+                    'blog.edit',
+                    'blog.delete',
+                    'blog.approve'
+                ]
+            ],
+            [
+                //admin permission
+                'group_name' => 'admin',
+                'permissions' => [
+                    'admin.create',
+                    'admin.view',
+                    'admin.edit',
+                    'admin.delete',
+                    'admin.approve'
+                ]
+            ],
 
-            //dashboard permission
-            'dashboard.view',
-            // blog Permission
-            'blog.create',
-            'blog.view',
-            'blog.edit',
-            'blog.delete',
-            'blog.approve',
-            //admin permission
-            'admin.create',
-            'admin.view',
-            'admin.edit',
-            'admin.delete',
-            'admin.approve',
-            // role permission
-            'role.create',
-            'role.view',
-            'role.edit',
-            'role.delete',
-            'role.approve',
+            [
+                'group_name' => 'role',
+                'permissions' => [
+                    // role permission
+                    'role.create',
+                    'role.view',
+                    'role.edit',
+                    'role.delete',
+                    'role.approve'
+                ]
+            ],
 
-            // profile permission
-            'profile.view',
-            'profile.edit'
+            [
+                'group_name' => 'profile',
+                'permissions' => [
+                    // profile permission
+                    'profile.view',
+                    'profile.edit'
+                ]
+            ]
         ];
 
 
@@ -64,9 +81,16 @@ class RolePermissionSedder extends Seeder
         // 
 
         for ($i=0; $i < count($permissions); $i++) { 
-            $permission = Permission::create(['name' => $permissions[$i]]);
-            $roleSuperAdmin->givePermissionTo($permission);
-            $permission->assignRole($roleSuperAdmin);
+            $permissionGroup = $permissions[$i]['group_name'];
+            for ($j=0; $j < count($permissions[$i]['permissions']); $j++) { 
+                // assign Permission and Groupname in Permission Table
+                $permission = Permission::create(['name' => $permissions[$i]['permissions'][$j], 'group_name' => $permissionGroup]);
+               
+            //    Assgin Permission to SuperAdmin
+                $roleSuperAdmin->givePermissionTo($permission);
+                $permission->assignRole($roleSuperAdmin);
+            }
+
         }
     }
 }

@@ -45,15 +45,25 @@
                         <div class="col-12 mt-5">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="header-title">Role list</h4>
+                                    {{-- Success MSg --}}
+                                    @include('backend.layouts.partials.successmsg')
+
+                                  <div class="row">
+                                      <div class="col">
+                                        <h4 class="header-title">Role list</h4>
+                                      </div>
+                                      <div class="col">
+                                        <a href="{{route('roles.create')}}" class="btn btn-primary btn-sm float-right mb-4">ADD Role & Permissions</a>
+                                      </div>
+                                  </div>
                                     <div class="data-tables">
                                         <table id="dataTable" class="text-center">
                                             <thead class="bg-light text-capitalize">
                                                 <tr>
-                                                    <th>SL</th>
-                                                    <th>Name</th>
-                                                    <th>Action</th>
-
+                                                    <th width="5%">Sl</th>
+                                                    <th width="10%">Name</th>
+                                                    <th width="60%">Permissions</th>
+                                                    <th width="15%">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -61,7 +71,28 @@
                                                 <tr>
                                                     <td>{{$loop->index + 1}}</td>
                                                     <td>{{$role->name}}</td>
-                                                    <td>-</td>
+                                                    <td>
+                                                        @foreach ($role->permissions as $perm)
+                                                        <span class="badge badge-info mr-1">
+                                                            {{ $perm->name }}
+                                                        </span>
+                                                        @endforeach  
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{route('roles.edit', $role->id)}}" class="btn btn-sm btn-info">Edit</a>
+                                                        
+
+                                                        <a class="btn btn-danger text-white" href="{{ route('roles.destroy', $role->id) }}"
+                                                            onclick="event.preventDefault(); document.getElementById('delete-form-{{ $role->id }}').submit();">
+                                                                Delete
+                                                            </a>
+                    
+                                                            <form id="delete-form-{{ $role->id }}" action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display: none;">
+                                                                @method('DELETE')
+                                                                @csrf
+                                                            </form>
+
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                              
