@@ -23,6 +23,15 @@
                                     <li class="{{ Route::is('roles.create') ? 'active' : ''}}"><a href="{{ route('roles.create')}}">Create Role</a></li>
                                 </ul>
                             </li>
+
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-layout-sidebar-left"></i><span>User
+                                    </span></a>
+                                <ul class="collapse {{ Route::is('users.create','users.index') ? 'in' : ''}}">
+                                    <li class="{{ Route::is('users.index') ? 'active' : ''}}"><a href="{{ route('users.index')}}">All Users</a></li>
+                                    <li class="{{ Route::is('users.create') ? 'active' : ''}}"><a href="{{ route('users.create')}}">Create Users</a></li>
+                                </ul>
+                            </li>
   
 
                         </ul>

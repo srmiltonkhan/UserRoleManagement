@@ -125,6 +125,8 @@ class RolesController extends Controller
         
 
         if(!empty($permission)){
+            $role->name = $request->name;
+            $role->save();
             $role->syncPermissions($permission); 
         }
 
