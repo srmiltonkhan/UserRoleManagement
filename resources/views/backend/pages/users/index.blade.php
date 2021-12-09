@@ -84,7 +84,7 @@
                                                         <a href="{{route('users.edit', $user->id)}}" class="btn btn-sm btn-info">Edit</a>
                                                         
 
-                                                        <a class="btn btn-danger btn-sm text-white" href="{{ route('users.destroy', $user->id) }}"
+                                                        <a class="btn btn-danger text-white" href="{{ route('users.destroy', $user->id) }}"
                                                             onclick="event.preventDefault(); document.getElementById('delete-form-{{ $user->id }}').submit();">
                                                                 Delete
                                                             </a>

@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Backend;
 
-
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Auth\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-
-
-
-
+use Spatie\Permission\Models\Permission;
 
 class UsersController extends Controller
 {
@@ -25,7 +20,6 @@ class UsersController extends Controller
     {
         $users = User::all();
         return view('backend.pages.users.index',compact('users'));
-        
     }
 
     /**
@@ -47,29 +41,26 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-                // Validation Data
-                $request->validate([
-                    'name' => 'required|max:50',
-                    'email' => 'required|max:100|email|unique:users',
-                    'password' => 'required|min:6|confirmed',
-                ]);
-        
-                // Create New User
-                $user = new User();
-                $user->name = $request->name;
-                $user->email = $request->email;
-                $user->password = Hash::make($request->password);
-                $user->save();
-        
-                // if ($request->roles) {
-                //     $user->assignRole($request->roles);
-                // }
-                 $name = $request->roles;
-                if($name){
-                    $user->assignRole($name);
-                }
+       
+        // Validation Data
+        $request->validate([
+            'name' => 'required|max:50',
+            'email' => 'required|max:100|email|unique:users',
+            'password' => 'required|min:6|confirmed',
+        ]);
 
-                return redirect()->route('users.index')->with('success', 'Data created successfully');
+        // Create New User
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        if ($request->roles) {
+            $user->assignRole($request->roles);
+        }
+
+        return redirect()->route('users.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -91,9 +82,10 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
-        $roles  = Role::all();
-        return view('backend.pages.users.edit', compact('user', 'roles'));
+        $role = Role::findById($id);
+        $all_permissions = Permission::all();
+        $permission_groups = User::getPermissionGroup();
+        return view('backend.pages.roles.edit',compact('role','all_permissions','permission_groups'));
     }
 
     /**
@@ -105,7 +97,30 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            // 'name' => 'required|max:100|unique:roles,id,'.$this->id,
+            'name' => 'required|max:100',
+           
+            'permissions' => 'required',
+        ],[
+            'name.required' => 'Please give a role number'
+        ]);
+
+       
+
+        $role = Role::findById($id);
+
+       $permission = $request->input('permissions');
+  
+        
+
+        if(!empty($permission)){
+            $role->name = $request->name;
+            $role->save();
+            $role->syncPermissions($permission); 
+        }
+
+        return back()->with('success', 'Data updated successfully');
     }
 
     /**
@@ -116,7 +131,7 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findById($id);
+        $user = User::find($id);
         if (!is_null($user)) {
             $user->delete();
         }

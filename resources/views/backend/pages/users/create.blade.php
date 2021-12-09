@@ -51,16 +51,14 @@
                                     {{-- Validation Message Area --}}
                                     @include('backend.layouts.partials.validation')
 
-                                    {{-- @if (session('success'))
-                                        <div class="alert alert-success" role="alert">
-                                            {{ session('success') }}
-                                        </div>
-                                    @endif --}}
 
 
 
-                                  <form action="{{ route('users.store') }}" method="POST">
-                                      @csrf
+
+                                    <form action="{{ route('users.store') }}" method="POST">
+                                   
+                                        @csrf
+                                 
                                     <div class="form-row">
                                         <div class="form-group col-md-6 com-sm-12">
                                             <label for="name">User Name</label>
