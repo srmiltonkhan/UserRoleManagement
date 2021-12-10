@@ -38,4 +38,18 @@ Route::group([],function(){
     Route::resource('users', 'Backend\UsersController');
 
 
+    // login route
+
+    Route::get('/login', 'Backend\Auth\LoginController@showLoginForm')->name('admin.login');
+    Route::post('/login/submit', 'Backend\Auth\LoginController@login')->name('admin.login.submit');
+        
+  // loginout route
+
+  Route::post('/logout/submit', 'Backend\Auth\LoginController@logout')->name('admin.logout.submit');
+    
+  // password reset route
+  Route::get('/login', 'Backend\Auth\LoginController@showLoginForm')->name('admin.login');
+  Route::post('/login/submit', 'Backend\Auth\LoginController@login')->name('admin.login.submit');
+
+  
 });

@@ -82,10 +82,9 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::findById($id);
-        $all_permissions = Permission::all();
-        $permission_groups = User::getPermissionGroup();
-        return view('backend.pages.roles.edit',compact('role','all_permissions','permission_groups'));
+        $user = User::find($id);
+        $roles  = Role::all();
+        return view('backend.pages.users.edit', compact('user','roles'));
     }
 
     /**
@@ -97,30 +96,35 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = User::find($id);
+
+        // Validation Data
         $request->validate([
-            // 'name' => 'required|max:100|unique:roles,id,'.$this->id,
-            'name' => 'required|max:100',
-           
-            'permissions' => 'required',
-        ],[
-            'name.required' => 'Please give a role number'
+            'name' => 'required|max:50',
+            'email' => 'required|max:100|email|unique:users,email,' . $id, // only update take the email textfield value for change
+            'password' => 'nullable|min:6|confirmed',
         ]);
-
-       
-
-        $role = Role::findById($id);
-
-       $permission = $request->input('permissions');
-  
         
 
-        if(!empty($permission)){
-            $role->name = $request->name;
-            $role->save();
-            $role->syncPermissions($permission); 
+        // Update  User
+        $user->name = $request->name;
+        $user->email = $request->email;
+        // if password get then update
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+
+
+        // First time delete roles by detach() method
+        $user->roles()->detach();
+        if ($request->roles) {
+            $user->assignRole($request->roles);
         }
 
-        return back()->with('success', 'Data updated successfully');
+
+
+        return back()->with('success', 'Data update successfully');
     }
 
     /**

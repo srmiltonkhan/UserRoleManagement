@@ -45,8 +45,10 @@
                         <div class="col-12 mt-5">
                             <div class="card">
                                 <div class="card-body">
-                                    {{-- Success MSg --}}
+
+                                    {{-- Success MSg Area --}}
                                     @include('backend.layouts.partials.successmsg')
+                                    {{-- End Success MSg Area --}}
 
                                   <div class="row">
                                       <div class="col">
@@ -74,11 +76,11 @@
                                                     <td>{{$user->name}}</td>
                                                     <td>{{$user->email}}</td>
                                                     <td>
-                                                        {{-- @foreach ($role->permissions as $perm)
+                                                        @foreach ($user->roles as $role)
                                                         <span class="badge badge-info mr-1">
-                                                            {{ $perm->name }}
+                                                            {{ $role->name }}
                                                         </span>
-                                                        @endforeach   --}}
+                                                        @endforeach  
                                                     </td>
                                                     <td>
                                                         <a href="{{route('users.edit', $user->id)}}" class="btn btn-sm btn-info">Edit</a>
