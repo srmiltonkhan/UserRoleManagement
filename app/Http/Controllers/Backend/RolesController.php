@@ -60,7 +60,7 @@ class RolesController extends Controller
 
        
 
-       $role = Role::create(['name' => $request->name]);
+       $role = Role::create(['name' => $request->name, 'guard_name' => 'admin']);
 
        $permission = $request->input('permissions');
   
@@ -92,7 +92,7 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        $role = Role::findById($id);
+        $role = Role::findById($id, 'admin');
         $all_permissions = Permission::all();
         $permission_groups = User::getPermissionGroup();
         return view('backend.pages.roles.edit',compact('role','all_permissions','permission_groups'));
@@ -118,7 +118,7 @@ class RolesController extends Controller
 
        
 
-        $role = Role::findById($id);
+        $role = Role::findById($id, 'admin');
 
        $permission = $request->input('permissions');
   
@@ -141,7 +141,7 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
-        $role = Role::findById($id);
+        $role = Role::findById($id, 'admin');
         if (!is_null($role)) {
             $role->delete();
         }
