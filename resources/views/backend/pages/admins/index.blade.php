@@ -3,7 +3,9 @@
 @section('title')
     Admin
 @endsection
-
+@php
+   $user =  Auth::guard('admin')->user();
+@endphp
 
 @section('styles')
         <!-- Start datatable css -->
@@ -55,7 +57,12 @@
                                         <h4 class="header-title">Admin list</h4>
                                       </div>
                                       <div class="col">
+
+                                        @if (Auth::guard('admin')->user()->can('admin.create'))
                                         <a href="{{route('admins.create')}}" class="btn btn-primary btn-sm float-right mb-4">Add User</a>
+                                        @endif
+
+
                                       </div>
                                   </div>
                                     <div class="data-tables">
@@ -66,7 +73,9 @@
                                                     <th width="20%">Name</th>
                                                     <th width="20%">Email</th>
                                                     <th width="35%">Roles</th>
+                                                    @if ($user->can('admin.edit') || $user->can('admin.delete'))
                                                     <th width="20%">Action</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -82,21 +91,30 @@
                                                         </span>
                                                         @endforeach  
                                                     </td>
-                                                    <td>
-                                                        <a href="{{route('admins.edit', $admin->id)}}" class="btn btn-sm btn-info">Edit</a>
-                                                        
 
-                                                        <a class="btn btn-danger text-white" href="{{ route('admins.destroy', $admin->id) }}"
-                                                            onclick="event.preventDefault(); document.getElementById('delete-form-{{ $admin->id }}').submit();">
-                                                                Delete
+
+
+                                                    @if ($user->can('admin.edit') || $user->can('admin.delete'))
+                                                    <td>
+                                                        @if (Auth::guard('admin')->user()->can('admin.edit'))
+                                                        <a href="{{route('admins.edit', $admin->id)}}" class="btn btn-sm btn-info">Edit</a>
+                                                        @endif
+
+
+                                                        @if (Auth::guard('admin')->user()->can('admin.delete'))
+                                                            <a class="btn btn-danger text-white" href="{{ route('admins.destroy', $admin->id) }}"
+                                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $admin->id }}').submit();">
+                                                                    Delete
                                                             </a>
                     
                                                             <form id="delete-form-{{ $admin->id }}" action="{{ route('admins.destroy', $admin->id) }}" method="POST" style="display: none;">
                                                                 @method('DELETE')
                                                                 @csrf
                                                             </form>
-
+                                                        @endif   
                                                     </td>
+                                                    @endif
+                                                    
                                                 </tr>
                                                 @endforeach
                                              

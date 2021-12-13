@@ -5,20 +5,44 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class AdminsController extends Controller
 {
+
+    public $user;
+
+    public function __construct()
+    {
+        $this->middleware(function($request, $next){
+            $this->user = Auth::guard('admin')->user();  // cath Auth Class er gurad admin user gholo dora
+            //back request in $next
+            return $next($request);
+        });
+    }
+
+    
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
+    
     {
-        $admins = Admin::all();
+        // IF not have permission of user and no then not permission
+        if(is_null($this->user) || !$this->user->can('admin.view')){
+            abort(403, 'Sorry !! You are Unauthorized to view any admin !');
+        }
+
+
+        // Find All admin username without superadmin
+        $admins = Admin::whereNotIn('name', ['superAdmin'])->get();
+
+      
         return view('backend.pages.admins.index',compact('admins'));
     }
 
@@ -29,6 +53,10 @@ class AdminsController extends Controller
      */
     public function create()
     {
+        if(is_null($this->user) || !$this->user->can('admin.create')){
+            abort(403, 'Sorry !! You are Unauthorized to create any admin !');
+        }
+
         $roles  = Role::all();
         return view('backend.pages.admins.create', compact('roles'));
     }
@@ -41,6 +69,9 @@ class AdminsController extends Controller
      */
     public function store(Request $request)
     {
+        if(is_null($this->user) || !$this->user->can('admin.create')){
+            abort(403, 'Sorry !! You are Unauthorized to create any admin !');
+        }
        
         // Validation Data
         $request->validate([
@@ -84,6 +115,10 @@ class AdminsController extends Controller
      */
     public function edit($id)
     {
+        if(is_null($this->user) || !$this->user->can('admin.edit')){
+            abort(403, 'Sorry !! You are Unauthorized to edit any admin !');
+        }
+
         $admin = Admin::find($id);
         $roles  = Role::all();
         return view('backend.pages.admins.edit', compact('admin','roles'));
@@ -98,6 +133,10 @@ class AdminsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(is_null($this->user) || !$this->user->can('admin.edit')){
+            abort(403, 'Sorry !! You are Unauthorized to edit any admin !');
+        }
+
         $admin = Admin::find($id);
 
         // Validation Data
@@ -138,6 +177,10 @@ class AdminsController extends Controller
      */
     public function destroy($id)
     {
+        if(is_null($this->user) || !$this->user->can('admin.delete')){
+            abort(403, 'Sorry !! You are Unauthorized to delete any admin !');
+        }
+
         $admin = Admin::find($id);
         if (!is_null($admin)) {
             $admin->delete();
