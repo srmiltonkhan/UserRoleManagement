@@ -40,7 +40,7 @@
                                         <a href="{{ route('roles.index') }}">
                                             <div class="p-4 d-flex justify-content-between align-items-center">
                                                 <div class="seofct-icon"><i class="fa fa-users"></i> Roles</div>
-                                                <h2>5</h2>
+                                                <h2>{{$total_roles}}</h2>
                                             </div>
                                         </a>
                                     </div>
@@ -52,7 +52,7 @@
                                         <a href="{{ route('admins.index') }}">
                                             <div class="p-4 d-flex justify-content-between align-items-center">
                                                 <div class="seofct-icon"><i class="fa fa-user"></i> Admins</div>
-                                                <h2>5</h2>
+                                                <h2>{{$total_admin}}</h2>
                                             </div>
                                         </a>
                                     </div>
@@ -63,7 +63,7 @@
                                     <div class="seo-fact sbg3">
                                         <div class="p-4 d-flex justify-content-between align-items-center">
                                             <div class="seofct-icon">Permissions</div>
-                                            <h2>45</h2>
+                                            <h2>{{$total_permissions}}</h2>
                                         </div>
                                     </div>
                                 </div>
